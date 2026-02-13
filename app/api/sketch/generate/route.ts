@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       contents: `${SYSTEM_PROMPT}\n\n${prompt}`,
       config: {
         thinkingConfig: {
-          thinkingLevel: "low",
+          thinkingLevel: "low" as const,
         },
       },
     })
