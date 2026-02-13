@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
 
     const prompt = buildPrompt(body)
 
-    // @ts-expect-error - thinkingLevel type mismatch in SDK
     const response = await ai.models.generateContent({
       model: "gemini-3-pro-preview",
       contents: `${SYSTEM_PROMPT}\n\n${prompt}`,
