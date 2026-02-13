@@ -1,11 +1,9 @@
 "use client"
 
 import React, { useState, useRef, useCallback, useEffect } from "react"
-import { Mic, MicOff, Loader2 } from "lucide-react"
+import { Mic, MicOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-
-type SpeechRecognitionType = typeof window extends { SpeechRecognition: infer T } ? T : never
 
 interface VoiceInputProps {
   onTranscript: (text: string) => void
@@ -16,24 +14,24 @@ interface VoiceInputProps {
 export function VoiceInput({ onTranscript, className, disabled }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false)
   const [isSupported, setIsSupported] = useState(true)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const recognitionRef = useRef<any>(null)
   const [interim, setInterim] = useState("")
 
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition
-    if (!SpeechRecognition) {
+    const SpeechRecognitionCtor =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SpeechRecognitionCtor) {
       setIsSupported(false)
       return
     }
 
-    const recognition = new SpeechRecognition()
+    const recognition = new SpeechRecognitionCtor()
     recognition.continuous = true
     recognition.interimResults = true
     recognition.lang = "en-AU" // Australian English for construction lingo
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: any) => {
       let finalTranscript = ""
       let interimTranscript = ""
 
@@ -54,7 +52,7 @@ export function VoiceInput({ onTranscript, className, disabled }: VoiceInputProp
       }
     }
 
-    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+    recognition.onerror = (event: any) => {
       console.error("Speech recognition error:", event.error)
       setIsListening(false)
     }
@@ -112,12 +110,4 @@ export function VoiceInput({ onTranscript, className, disabled }: VoiceInputProp
       )}
     </div>
   )
-}
-
-// Add type declarations for Web Speech API
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition
-    webkitSpeechRecognition: typeof SpeechRecognition
-  }
 }
