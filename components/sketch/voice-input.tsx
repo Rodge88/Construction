@@ -5,6 +5,8 @@ import { Mic, MicOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
+type SpeechRecognitionType = typeof window extends { SpeechRecognition: infer T } ? T : never
+
 interface VoiceInputProps {
   onTranscript: (text: string) => void
   className?: string
@@ -14,7 +16,8 @@ interface VoiceInputProps {
 export function VoiceInput({ onTranscript, className, disabled }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false)
   const [isSupported, setIsSupported] = useState(true)
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null)
   const [interim, setInterim] = useState("")
 
   useEffect(() => {
