@@ -57,11 +57,6 @@ export async function POST(request: NextRequest) {
     const response = await ai.models.generateContent({
       model: "gemini-3-pro-preview",
       contents: `${SYSTEM_PROMPT}\n\n${prompt}`,
-      config: {
-        thinkingConfig: {
-          thinkingLevel: "low",
-        },
-      },
     })
 
     const text = response.text ?? ""
